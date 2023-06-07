@@ -48,9 +48,10 @@ export function generateOpenAPIDocumentFromTRPCRouter<R extends Router<any>>(
     let metaResponses = procDef.meta?.responses;
     let response200 = metaResponses?.[200];
     const responses = {
+      ...metaResponses,
       200: {
         ...response200,
-        description: (output && asZodType(output).description) || (response200 && 'description' in response200 && response200?.description) || '',
+        description: (output && asZodType(output).description) || (response200 && 'description' in response200 && response200.description) || '',
         ...(outputSchema
           ? {
             content: {
@@ -61,7 +62,6 @@ export function generateOpenAPIDocumentFromTRPCRouter<R extends Router<any>>(
           }
           : {}),
       },
-      ...metaResponses,
     }
     const operationInfo: Partial<OpenAPIV3.OperationObject> = {
       tags: procName.split('.').slice(0, -1).slice(0, 1),
