@@ -10,6 +10,11 @@ export const allowedOperationKeys = defineKeys([
   'externalDocs',
   'summary',
   'tags',
+  'requestBody',
+  'responses',
+  'callbacks',
+  'security',
+  'servers'
 ])
 
 /**
