@@ -8,7 +8,13 @@ export const createDummyRouter = (
   return t.router({
     hello: t.router({
       world: t.procedure
-        .meta({ description: 'ok' })
+        .meta({ description: 'ok',
+          responses: {
+            200: {
+              description: 'Aok'
+            }
+          }
+        })
         .input(z.object({ name: z.string() }))
         .output(z.string())
         .query(() => 'hello world'),

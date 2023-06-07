@@ -1,9 +1,9 @@
-import { zodToJsonSchema } from 'zod-to-json-schema'
-import { DummyProcedure, DummyRouter } from './dummyRouter'
-import { z, AnyZodObject, ZodType } from 'zod'
-import { OpenAPIV3 } from 'openapi-types'
-import { OperationMeta, allowedOperationKeys } from './meta'
-import { RootConfig, Router, RouterDef } from '@trpc/server'
+import {zodToJsonSchema} from 'zod-to-json-schema'
+import {DummyProcedure, DummyRouter} from './dummyRouter'
+import {AnyZodObject, z, ZodType} from 'zod'
+import {OpenAPIV3} from 'openapi-types'
+import {allowedOperationKeys, OperationMeta} from './meta'
+import {RootConfig, Router, RouterDef} from '@trpc/server'
 
 /**
  * @public
@@ -33,31 +33,35 @@ export function generateOpenAPIDocumentFromTRPCRouter<R extends Router<any>>(
     const inputSchema = toJsonSchema(input)
     const outputSchema = output
       ? toJsonSchema(
-          z.object({
-            result: z.object({
-              data: asZodType(output),
-            }),
+        z.object({
+          result: z.object({
+            data: asZodType(output),
           }),
-        )
+        }),
+      )
       : undefined
     const key = [
       '',
       ...(options.pathPrefix || '/').split('/').filter(Boolean),
       procName,
     ].join('/')
+    let metaResponses = procDef.meta?.responses;
+    let response200 = metaResponses?.[200];
     const responses = {
       200: {
-        description: (output && asZodType(output).description) || '',
+        ...response200,
+        description: (output && asZodType(output).description) || (response200 && 'description' in response200 && response200?.description) || '',
         ...(outputSchema
           ? {
-              content: {
-                'application/json': {
-                  schema: outputSchema as any,
-                },
+            content: {
+              'application/json': {
+                schema: outputSchema as any,
               },
-            }
+            },
+          }
           : {}),
       },
+      ...metaResponses,
     }
     const operationInfo: Partial<OpenAPIV3.OperationObject> = {
       tags: procName.split('.').slice(0, -1).slice(0, 1),
@@ -151,7 +155,7 @@ export interface GenerateOpenAPIDocumentOptions<M extends OperationMeta> {
 }
 
 function toJsonSchema(input: ZodType) {
-  const { $schema, ...output } = zodToJsonSchema(input)
+  const {$schema, ...output} = zodToJsonSchema(input)
   return output
 }
 

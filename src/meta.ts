@@ -8,20 +8,25 @@ export const allowedOperationKeys = defineKeys([
   'deprecated',
   'description',
   'externalDocs',
+  'operationId',
+  'parameters',
   'summary',
   'tags',
   'requestBody',
-  'responses',
   'callbacks',
   'security',
   'servers'
 ])
 
+export const optionalOperationKeys = defineKeys([
+  'responses',
+])
+
 /**
  * @public
  */
-export interface OperationMeta
-  extends Pick<
+export type OperationMeta =
+   Pick<
     OpenAPIV3.OperationObject,
     typeof allowedOperationKeys[number]
-  > {}
+  > & Partial<OpenAPIV3.OperationObject>

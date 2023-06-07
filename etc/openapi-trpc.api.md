@@ -25,8 +25,7 @@ export interface GenerateOpenAPIDocumentOptions<M extends OperationMeta> {
 // Warning: (ae-forgotten-export) The symbol "allowedOperationKeys" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export interface OperationMeta extends Pick<OpenAPIV3.OperationObject, typeof allowedOperationKeys[number]> {
-}
+export type OperationMeta = Pick<OpenAPIV3.OperationObject, typeof allowedOperationKeys[number]> & Partial<OpenAPIV3.OperationObject>;
 
 // (No @packageDocumentation comment for this package)
 
